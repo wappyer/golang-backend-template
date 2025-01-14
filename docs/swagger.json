@@ -1,0 +1,30 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "#### 接口调用须知：\n**header请求头**\n```shell\nAuthorization: {{token}}  //登录凭证,token通过对应登录接口获取\nUser-Role: user  //角色, user用户/admin管理员\n```",
+        "title": "golang后端接口项目模版",
+        "contact": {},
+        "license": {
+            "name": "项目地址",
+            "url": "https://gitee.com/wappyer/golang-backend-template.git"
+        },
+        "version": "1.0"
+    },
+    "host": "127.0.0.1:8080",
+    "basePath": "/api",
+    "paths": {},
+    "tags": [
+        {
+            "description": "登录相关",
+            "name": "login"
+        },
+        {
+            "description": "用户信息相关",
+            "name": "user"
+        },
+        {
+            "description": "信息配置相关",
+            "name": "info"
+        }
+    ]
+}
