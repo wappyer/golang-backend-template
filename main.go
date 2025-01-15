@@ -18,7 +18,7 @@ import (
 // @description.markdown	api
 // @license.name			项目地址
 // @license.url			https://gitee.com/wappyer/golang-backend-template.git
-// @host					127.0.0.1:8080
+// @host					127.0.0.1:8100
 // @BasePath				/api
 func main() {
 	// 通过flag指定运行环境
