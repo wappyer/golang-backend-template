@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"gitee.com/wappyer/golang-backend-template/config"
 	"gitee.com/wappyer/golang-backend-template/global"
@@ -17,20 +18,23 @@ import (
 )
 
 type MainRunner struct {
+	Conf   config.Config
 	Server *http.Server
 }
 
-func NewMainRunner() *MainRunner {
-	return &MainRunner{}
+func NewMainRunner(conf config.Config) *MainRunner {
+	return &MainRunner{
+		Conf: conf,
+	}
 }
 
 func (r *MainRunner) Initialize() error {
 	// 初始化数据库
-	if err := repository.Initialize(config.Conf.Db); err != nil {
+	if err := repository.Initialize(r.Conf.Db); err != nil {
 		panic(fmt.Sprintf("[init] repository初始化失败：%s", err))
 	}
 	// 初始化日志
-	logger.Initialize(config.Conf.Log, []string{global.ContextKeyTraceId, global.ContextKeyRole, global.ContextKeyLoginId})
+	logger.Initialize(r.Conf.Log, []string{global.ContextKeyTraceId, global.ContextKeyRole, global.ContextKeyLoginId})
 	// 初始化验证器
 	validate.Initialize()
 	// 注册错误码
@@ -57,8 +61,8 @@ func (r *MainRunner) WebServer() {
 	//engine.Use(middleware.Logger(r.Conf.Server))
 
 	router.Router(engine)
-	addr := fmt.Sprintf(":%s", config.Conf.Server.Port)
-	webServer := &http.Server{
+	addr := fmt.Sprintf(":%s", r.Conf.Server.Port)
+	r.Server = &http.Server{
 		Addr:           addr,
 		Handler:        engine,
 		ReadTimeout:    10 * time.Second,
@@ -66,11 +70,15 @@ func (r *MainRunner) WebServer() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	logger.InfoF(context.Background(), "[init] 启动web服务 listening at %v", addr)
-	err := webServer.ListenAndServe()
+	err := r.Server.ListenAndServe()
 	if err != nil {
-		panic(fmt.Sprintf("[init] 启动web服务失败: %s \n", err))
+		if errors.Is(err, http.ErrServerClosed) {
+			logger.InfoF(context.Background(), "[init] web服务退出.")
+		} else {
+			logger.ErrorF(context.Background(), "[init] web服务异常中断: %s.", err)
+		}
 	}
-	r.Server = webServer
+	return
 }
 
 func (r *MainRunner) Shutdown(ctx context.Context) {

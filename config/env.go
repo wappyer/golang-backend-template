@@ -22,3 +22,17 @@ func IsEnv(env string) (Env, bool) {
 	}
 	return "", false
 }
+
+func EnvNotEmpty() {
+	if Conf.Env == "" {
+		panic("[init] env is empty")
+	}
+}
+func EnvIsPro() bool {
+	EnvNotEmpty()
+	return Conf.Env == Pro
+}
+
+func EnvIsDev() {
+
+}

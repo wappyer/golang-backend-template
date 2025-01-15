@@ -14,22 +14,21 @@ import (
 )
 
 type DocsRunner struct {
-	Env    config.Env
 	Conf   config.Server
 	Server *http.Server
 }
 
-func NewDocsRunner() *DocsRunner {
-	return &DocsRunner{}
+func NewDocsRunner(conf config.Server) *DocsRunner {
+	return &DocsRunner{
+		Conf: conf,
+	}
 }
 
 func (r *DocsRunner) Initialize() error {
-	if !config.Conf.Docs.Enable {
+	if !r.Conf.Enable {
 		logger.InfoF(context.Background(), "[init] swagger服务未开启")
 		return errors.New("swagger服务未开启")
 	}
-	r.Env = config.Conf.Env
-	r.Conf = config.Conf.Docs
 	return nil
 }
 
@@ -39,12 +38,12 @@ func (r *DocsRunner) Run() {
 }
 
 func (r *DocsRunner) WebServer() {
-	docsServer := &http.Server{}
-	if r.Env != config.Pro {
+	r.Server = &http.Server{}
+	if !config.EnvIsPro() {
 		docsGinEngine := gin.New()
-		docsGinEngine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		docsGinEngine.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		addr := fmt.Sprintf(":%s", r.Conf.Port)
-		docsServer = &http.Server{
+		r.Server = &http.Server{
 			Addr:           addr,
 			Handler:        docsGinEngine,
 			ReadTimeout:    10 * time.Second,
@@ -52,12 +51,16 @@ func (r *DocsRunner) WebServer() {
 			MaxHeaderBytes: 1 << 20,
 		}
 		logger.InfoF(context.Background(), "[init] 启动swagger服务 listening at %v", addr)
-		err := docsServer.ListenAndServe()
+		err := r.Server.ListenAndServe()
 		if err != nil {
-			panic(fmt.Sprintf("[init] 启动swagger服务失败: %s \n", err))
+			if errors.Is(err, http.ErrServerClosed) {
+				logger.InfoF(context.Background(), "[init] swagger服务退出.")
+			} else {
+				logger.ErrorF(context.Background(), "[init] swagger服务异常中断: %s.", err)
+			}
 		}
-		r.Server = docsServer
 	}
+	return
 }
 
 func (r *DocsRunner) Shutdown(ctx context.Context) {

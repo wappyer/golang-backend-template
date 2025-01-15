@@ -3,6 +3,7 @@
 main
 
 log/*.log
+docs/log.log
 upload/report
 upload/evaluate
 

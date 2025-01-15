@@ -7,10 +7,11 @@ golang后端接口项目模版
 
 ```shell
 # 启动项目
-$ go run main.go -env dev
-
-# 自动更新swagger接口文档并启动项目（开发时一般用这个）
-$ swag fmt & swag init --md docs & go run ./main.go -env dev
+$ ./cmd/run.sh
+# swag fmt > ./docs/log.log &
+# swag init --md ./docs > ./docs/log.log &
+# go run ./main.go -env dev
+# 具体查看启动文件`cmd/run.sh`内容
 
 # 项目启动后会调用runnersFactory中注册的所有服务的run方法
 # 目前启动:

@@ -12,22 +12,21 @@ import (
 )
 
 type PprofRunner struct {
-	Env    config.Env
 	Conf   config.Server
 	Server *http.Server
 }
 
-func NewPprofRunner() *PprofRunner {
-	return &PprofRunner{}
+func NewPprofRunner(conf config.Server) *PprofRunner {
+	return &PprofRunner{
+		Conf: conf,
+	}
 }
 
 func (r *PprofRunner) Initialize() error {
-	if !config.Conf.Monitor.Enable {
+	if !r.Conf.Enable {
 		logger.InfoF(context.Background(), "[init] pprof服务未开启")
 		return errors.New("pprof服务未开启")
 	}
-	r.Env = config.Conf.Env
-	r.Conf = config.Conf.Monitor
 	return nil
 }
 
@@ -37,11 +36,11 @@ func (r *PprofRunner) Run() {
 }
 
 func (r *PprofRunner) WebServer() {
-	pprofServer := &http.Server{}
-	if r.Env != config.Pro {
+	r.Server = &http.Server{}
+	if !config.EnvIsPro() {
 		pprofGinEngine := gin.New()
 		addr := fmt.Sprintf(":%s", r.Conf.Port)
-		pprofServer = &http.Server{
+		r.Server = &http.Server{
 			Addr:           addr,
 			Handler:        pprofGinEngine,
 			ReadTimeout:    10 * time.Second,
@@ -49,12 +48,16 @@ func (r *PprofRunner) WebServer() {
 			MaxHeaderBytes: 1 << 20,
 		}
 		logger.InfoF(context.Background(), "[init] 启动pprof服务 listening at %v", addr)
-		err := pprofServer.ListenAndServe()
+		err := r.Server.ListenAndServe()
 		if err != nil {
-			panic(fmt.Sprintf("[init] 启动pprof服务失败: %s \n", err))
+			if errors.Is(err, http.ErrServerClosed) {
+				logger.InfoF(context.Background(), "[init] pprof服务退出.")
+			} else {
+				logger.ErrorF(context.Background(), "[init] pprof服务异常中断: %s.", err)
+			}
 		}
-		r.Server = pprofServer
 	}
+	return
 }
 
 func (r *PprofRunner) Shutdown(ctx context.Context) {

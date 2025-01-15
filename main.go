@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"os/signal"
+	"path"
+	"runtime"
 	"syscall"
 )
 
@@ -32,13 +34,15 @@ func main() {
 	}
 
 	// 加载全局配置文件
-	InitConfig(fmt.Sprintf("./config/%s/%s", flagEnv, "config.yaml"))
+	_, filename, _, _ := runtime.Caller(0)
+	rootPath := path.Dir(filename)
+	InitConfig(fmt.Sprintf("%s/config/%s/%s", rootPath, flagEnv, "config.yaml"))
 
 	// 启动服务
 	runnersFactory := runner.NewRunnersFactory()
-	runnersFactory.RegisterRunner(runner.NewMainRunner())  // web接口服务 runner
-	runnersFactory.RegisterRunner(runner.NewDocsRunner())  // swagger文档服务 runner
-	runnersFactory.RegisterRunner(runner.NewPprofRunner()) // pprof监控服务 runner
+	runnersFactory.RegisterRunner(runner.NewMainRunner(config.Conf))          // web接口服务 runner
+	runnersFactory.RegisterRunner(runner.NewDocsRunner(config.Conf.Docs))     // swagger文档服务 runner
+	runnersFactory.RegisterRunner(runner.NewPprofRunner(config.Conf.Monitor)) // pprof监控服务 runner
 	runnersFactory.Run()
 
 	/**
@@ -77,7 +81,7 @@ func InitConfig(filePath string) {
 	viper.OnConfigChange(func(e fsnotify.Event) {
 		fmt.Printf("[init] 重载配置文件:%s Op:%s\n", e.Name, e.Op)
 		if err := viper.Unmarshal(&config.Conf); err != nil {
-			fmt.Printf("[init] 重载配置文件失败： %s \n", err.Error())
+			fmt.Printf("[init] 重载配置文件失败：%s \n", err.Error())
 		} else {
 			fmt.Printf("[init] 重载配置文件成功：%v \n", config.Conf)
 		}
@@ -87,7 +91,7 @@ func InitConfig(filePath string) {
 	if err := viper.Unmarshal(&config.Conf); err != nil {
 		panic(fmt.Sprintf("[init] 载入配置文件失败： %s \n", err.Error()))
 	}
-	fmt.Printf("[init] 载入配置文件成功！\n")
+	fmt.Printf("[init] 载入配置文件成功！配置文件路径：%s \n", filePath)
 }
 
 //	@tag.name			login
