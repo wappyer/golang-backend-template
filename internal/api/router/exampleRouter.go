@@ -12,8 +12,8 @@ func ExampleRouter(engine *gin.Engine) {
 	apiRouter.Use(mw.Auth())
 
 	// 用户相关
-	adminCtrl := controller.NewExampleController()
+	exampleCtrl := controller.NewExampleController()
 	{
-		apiRouter.POST("/admin/login", mw.MustUser, adminCtrl.Example) // 管理员登录
+		apiRouter.POST("/admin/login", mw.MustUser, exampleCtrl.Example) // 管理员登录
 	}
 }

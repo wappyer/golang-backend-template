@@ -1,0 +1,12 @@
+package model
+
+const TableName{{.ModelNameUpper}} = "{{.ModelName}}"
+
+type {{.ModelNameUpper}} struct {
+	Id             int            `gorm:"column:id;type:int(11);primaryKey:true;autoIncrement:true;comment:编号" json:"id"` // id
+	TimestampField TimestampField `gorm:"embedded" json:"-"`
+}
+
+func (*{{.ModelNameUpper}}) TableName() string {
+	return TableName{{.ModelNameUpper}}
+}

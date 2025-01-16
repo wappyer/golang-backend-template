@@ -1,0 +1,81 @@
+package application
+
+import (
+	"context"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/contract/cmd"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/contract/query"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/model"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/uid"
+)
+
+type {{.ModelNameUpper}}App struct {
+	{{.ModelNameUpper}}Repo repository.I{{.ModelNameUpper}}Repository
+}
+
+func New{{.ModelNameUpper}}App() *{{.ModelNameUpper}}App {
+	return &{{.ModelNameUpper}}App{
+		{{.ModelNameUpper}}Repo: repository.New{{.ModelNameUpper}}Repository(),
+	}
+}
+
+// Get{{.ModelNameUpper}}List 获取{{.ModelDesc}}列表
+func (app *{{.ModelNameUpper}}App) Get{{.ModelNameUpper}}List(ctx context.Context, req query.Get{{.ModelNameUpper}}ListReq) (query.Get{{.ModelNameUpper}}ListResp, errno.Errno) {
+	resp := query.Get{{.ModelNameUpper}}ListResp{}
+	count, list, err := app.{{.ModelNameUpper}}Repo.List(ctx, repository.{{.ModelNameUpper}}ListReq{
+		Search: req.Search,
+	})
+	if err != nil {
+		return resp, errno.NewErrnoWithErr(errno.CodeDatabase, err)
+	}
+	resp.Count = count
+	resp.List = list
+	return resp, errno.Errno{}
+}
+
+// Get{{.ModelNameUpper}}Detail 获取{{.ModelDesc}}详情
+func (app *{{.ModelNameUpper}}App) Get{{.ModelNameUpper}}Detail(ctx context.Context, req query.Get{{.ModelNameUpper}}DetailReq) (*model.{{.ModelNameUpper}}, errno.Errno) {
+	detail := &model.{{.ModelNameUpper}}{
+		Id: req.Id,
+	}
+	eno := app.{{.ModelNameUpper}}Repo.MustGet(ctx, detail)
+	if eno.NotNil() {
+		return nil, eno
+	}
+	return detail, errno.Errno{}
+}
+
+// Add{{.ModelNameUpper}} 添加{{.ModelDesc}}
+func (app *{{.ModelNameUpper}}App) Add{{.ModelNameUpper}}(ctx context.Context, req cmd.Add{{.ModelNameUpper}}Req) errno.Errno {
+	err := app.{{.ModelNameUpper}}Repo.Add(ctx, &model.{{.ModelNameUpper}}{
+		Id:           uid.MiniUid(1).GetStr(),
+		{{.ModelNameUpper}}Name: req.{{.ModelNameUpper}}Name,
+		Secret:       uid.RandStr(10),
+	})
+	if err != nil {
+		return errno.NewErrnoWithErr(errno.CodeDatabase, err)
+	}
+	return errno.Errno{}
+}
+
+// Update{{.ModelNameUpper}} 编辑{{.ModelDesc}}
+func (app *{{.ModelNameUpper}}App) Update{{.ModelNameUpper}}(ctx context.Context, req cmd.Update{{.ModelNameUpper}}Req) errno.Errno {
+	err := app.{{.ModelNameUpper}}Repo.Update(ctx, &model.{{.ModelNameUpper}}{
+		Id:           req.Id,
+		{{.ModelNameUpper}}Name: req.{{.ModelNameUpper}}Name,
+	})
+	if err != nil {
+		return errno.NewErrnoWithErr(errno.CodeDatabase, err)
+	}
+	return errno.Errno{}
+}
+
+// Delete{{.ModelNameUpper}} 删除{{.ModelDesc}}
+func (app *{{.ModelNameUpper}}App) Delete{{.ModelNameUpper}}(ctx context.Context, req cmd.Delete{{.ModelNameUpper}}Req) errno.Errno {
+	err := app.{{.ModelNameUpper}}Repo.Delete(ctx, req.Id)
+	if err != nil {
+		return errno.NewErrnoWithErr(errno.CodeDatabase, err)
+	}
+	return errno.Errno{}
+}

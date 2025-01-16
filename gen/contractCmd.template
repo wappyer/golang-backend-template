@@ -1,0 +1,17 @@
+package cmd
+
+// Add{{.ModelNameUpper}}Req 新增{{.ModelDesc}}
+type Add{{.ModelNameUpper}}Req struct {
+	{{.ModelNameUpper}}Name string `json:"{{.ModelName}}Name"` // {{.ModelDesc}}名称
+}
+
+// Update{{.ModelNameUpper}}Req 修改{{.ModelDesc}}
+type Update{{.ModelNameUpper}}Req struct {
+	Id string `json:"id"` // {{.ModelDesc}}id
+	Add{{.ModelNameUpper}}Req
+}
+
+// Delete{{.ModelNameUpper}}Req 删除{{.ModelDesc}}
+type Delete{{.ModelNameUpper}}Req struct {
+	Id string `json:"id"` // {{.ModelDesc}}ID
+}

@@ -1,0 +1,20 @@
+package query
+
+import "gitee.com/wappyer/golang-backend-template/internal/domain/model"
+
+// Get{{.ModelNameUpper}}ListReq 获取{{.ModelDesc}}列表
+type Get{{.ModelNameUpper}}ListReq struct {
+	Search string `json:"search"`
+	Offset int    `json:"offset"`
+	Limit  int    `json:"limit"`
+}
+
+type Get{{.ModelNameUpper}}ListResp struct {
+	Count int64             `json:"count"`
+	List  []*model.{{.ModelNameUpper}} `json:"list"`
+}
+
+// Get{{.ModelNameUpper}}DetailReq 获取{{.ModelDesc}}详情
+type Get{{.ModelNameUpper}}DetailReq struct {
+	Id string `json:"id" uri:"id" validate:"required"` // {{.ModelDesc}}id
+}

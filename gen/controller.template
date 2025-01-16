@@ -1,0 +1,154 @@
+package controller
+
+import (
+	"gitee.com/wappyer/golang-backend-template/internal/api/controller/vo"
+	"gitee.com/wappyer/golang-backend-template/internal/application"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/contract/cmd"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/contract/query"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/response"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/validate"
+	"github.com/gin-gonic/gin"
+)
+
+type {{.ModelNameUpper}}Controller struct {
+	{{.ModelNameUpper}}App *application.{{.ModelNameUpper}}App
+}
+
+func New{{.ModelNameUpper}}Controller() *{{.ModelNameUpper}}Controller {
+	return &{{.ModelNameUpper}}Controller{
+		{{.ModelNameUpper}}App: application.New{{.ModelNameUpper}}App(),
+	}
+}
+
+// {{.ModelNameUpper}}List
+//
+//	@Summary	{{.ModelDesc}}列表
+//	@Tags		{{.ModelName}}
+//	@Accept		json
+//	@Produce	json
+//	@Param		pageSize	query		int	false	"每页行数"	default(10)
+//	@Param		page		query		int	false	"页码"	default(1)
+//	@Success	200			{object}	model.CommonRespBody{data=vo.Get{{.ModelNameUpper}}ListResp}
+//	@Router		/{{.ModelName}} [get]
+func (c *{{.ModelNameUpper}}Controller) {{.ModelNameUpper}}List(ctx *gin.Context) {
+	params := query.Get{{.ModelNameUpper}}ListReq{}
+	if _, err := validate.Bind(ctx, &vo.Get{{.ModelNameUpper}}ListReq{}, nil, &params); err != nil {
+		response.FailedByValid(ctx, err)
+		return
+	}
+
+	result, eno := c.{{.ModelNameUpper}}App.Get{{.ModelNameUpper}}List(ctx, params)
+	if eno.NotNil() {
+		response.Failed(ctx, eno)
+		return
+	}
+
+	FormatAndReturn(ctx, &vo.Get{{.ModelNameUpper}}ListResp{}, result)
+	return
+}
+
+// {{.ModelNameUpper}}Detail
+//
+//	@Summary	{{.ModelDesc}}详情
+//	@Tags		{{.ModelName}}
+//	@Accept		json
+//	@Produce	json
+//	@Param		id	path		string	true	"{{.ModelDesc}}id"
+//	@Success	200	{object}	model.CommonRespBody{data=vo.Get{{.ModelNameUpper}}DetailResp}
+//	@Router		/{{.ModelName}}/:id [get]
+func (c *{{.ModelNameUpper}}Controller) {{.ModelNameUpper}}Detail(ctx *gin.Context) {
+	params := query.Get{{.ModelNameUpper}}DetailReq{}
+	if _, err := validate.Bind(ctx, &vo.Get{{.ModelNameUpper}}DetailReq{}, nil, &params); err != nil {
+		response.FailedByValid(ctx, err)
+		return
+	}
+
+	result, eno := c.{{.ModelNameUpper}}App.Get{{.ModelNameUpper}}Detail(ctx, params)
+	if eno.NotNil() {
+		response.Failed(ctx, eno)
+		return
+	}
+
+	FormatAndReturn(ctx, &vo.Get{{.ModelNameUpper}}DetailResp{}, result)
+	return
+}
+
+// Add{{.ModelNameUpper}}
+//
+//	@Summary	添加{{.ModelDesc}}
+//	@Tags		{{.ModelName}}
+//	@Accept		json
+//	@Produce	json
+//	@Param		id		path		string				true	"{{.ModelDesc}}id"
+//	@Param		param	body		vo.Add{{.ModelNameUpper}}Req	true	"请求参数"
+//	@Success	200		{object}	model.CommonRespBody
+//	@Router		/{{.ModelName}} [post]
+func (c *{{.ModelNameUpper}}Controller) Add{{.ModelNameUpper}}(ctx *gin.Context) {
+	params := cmd.Add{{.ModelNameUpper}}Req{}
+	if _, err := validate.Bind(ctx, &vo.Add{{.ModelNameUpper}}Req{}, nil, &params); err != nil {
+		response.FailedByValid(ctx, err)
+		return
+	}
+
+	eno := c.{{.ModelNameUpper}}App.Add{{.ModelNameUpper}}(ctx, params)
+	if eno.NotNil() {
+		response.Failed(ctx, eno)
+		return
+	}
+
+	response.Success(ctx, nil)
+	return
+}
+
+// Update{{.ModelNameUpper}}
+//
+//	@Summary	编辑{{.ModelDesc}}
+//	@Tags		{{.ModelName}}
+//	@Accept		json
+//	@Produce	json
+//	@Param		id		path		string					true	"{{.ModelDesc}}id"
+//	@Param		param	body		vo.Update{{.ModelNameUpper}}Req	true	"请求参数"
+//	@Success	200		{object}	model.CommonRespBody
+//	@Router		/{{.ModelName}}/:id [put]
+func (c *{{.ModelNameUpper}}Controller) Update{{.ModelNameUpper}}(ctx *gin.Context) {
+	params := cmd.Update{{.ModelNameUpper}}Req{}
+	if _, err := validate.Bind(ctx, &vo.Update{{.ModelNameUpper}}Req{}, nil, &params); err != nil {
+		response.FailedByValid(ctx, err)
+		return
+	}
+
+	eno := c.{{.ModelNameUpper}}App.Update{{.ModelNameUpper}}(ctx, params)
+	if eno.NotNil() {
+		response.Failed(ctx, eno)
+		return
+	}
+
+	response.Success(ctx, nil)
+	return
+}
+
+// Delete{{.ModelNameUpper}}
+//
+//	@Summary	删除{{.ModelDesc}}
+//	@Tags		{{.ModelName}}
+//	@Accept		json
+//	@Produce	json
+//	@Param		id	path		string	true	"{{.ModelDesc}}id"
+//	@Success	200	{object}	model.CommonRespBody
+//	@Router		/{{.ModelName}}/:id [delete]
+func (c *{{.ModelNameUpper}}Controller) Delete{{.ModelNameUpper}}(ctx *gin.Context) {
+	params := cmd.Delete{{.ModelNameUpper}}Req{}
+	if _, err := validate.Bind(ctx, &vo.Delete{{.ModelNameUpper}}Req{}, nil, &params); err != nil {
+		response.FailedByValid(ctx, err)
+		return
+	}
+
+	eno := c.{{.ModelNameUpper}}App.Delete{{.ModelNameUpper}}(ctx, params)
+	if eno.NotNil() {
+		response.Failed(ctx, eno)
+		return
+	}
+
+	response.Success(ctx, nil)
+	return
+}

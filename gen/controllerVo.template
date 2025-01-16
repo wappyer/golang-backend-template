@@ -1,0 +1,42 @@
+package vo
+
+// Get{{.ModelNameUpper}}ListReq 获取{{.ModelDesc}}列表
+type Get{{.ModelNameUpper}}ListReq struct {
+	CommonPageReq
+}
+
+type Get{{.ModelNameUpper}}ListResp struct {
+	Count int64               `json:"count"`
+	List  []*{{.ModelNameUpper}}ListItem `json:"list"`
+}
+
+type {{.ModelNameUpper}}ListItem struct {
+	Id           string `json:"id"`
+	{{.ModelNameUpper}}Name string `json:"{{.ModelName}}Name"`
+}
+
+// Get{{.ModelNameUpper}}DetailReq 获取{{.ModelDesc}}详情
+type Get{{.ModelNameUpper}}DetailReq struct {
+	Id string `json:"id" uri:"id" validate:"required"` // {{.ModelDesc}}id
+}
+
+type Get{{.ModelNameUpper}}DetailResp struct {
+	Id           string `json:"id"`           // {{.ModelDesc}}id
+	{{.ModelNameUpper}}Name string `json:"{{.ModelName}}Name"` // {{.ModelDesc}}名称
+}
+
+// Add{{.ModelNameUpper}}Req 新增{{.ModelDesc}}
+type Add{{.ModelNameUpper}}Req struct {
+	{{.ModelNameUpper}}Name string `json:"{{.ModelName}}Name" validate:"required" label:"{{.ModelDesc}}名称"` // {{.ModelDesc}}名称
+}
+
+// Update{{.ModelNameUpper}}Req 修改{{.ModelDesc}}
+type Update{{.ModelNameUpper}}Req struct {
+	Id string `json:"id" uri:"id" validate:"required"` // {{.ModelDesc}}id
+	Add{{.ModelNameUpper}}Req
+}
+
+// Delete{{.ModelNameUpper}}Req 删除{{.ModelDesc}}
+type Delete{{.ModelNameUpper}}Req struct {
+	Id string `json:"id" uri:"id" validate:"required"` // {{.ModelDesc}}id
+}
