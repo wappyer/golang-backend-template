@@ -10,6 +10,7 @@ import (
 	"gitee.com/wappyer/golang-backend-template/internal/domain/entity"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/model"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/logger"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/uid"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -83,9 +84,9 @@ func Logger(serverConf config.Server) gin.HandlerFunc {
 		}
 		if strings.Contains(c.Writer.Header().Get("Content-Type"), "application/json") {
 			data, _ := json.Marshal(handlerInfo)
-			zap.S().Info(string(data))
+			logger.InfoF(c, "[request] %s", data)
 		} else {
-			zap.S().Info(handlerInfo.Request.Header)
+			logger.InfoF(c, "[request] %s", handlerInfo.Request.Header)
 		}
 
 		// 更新log表响应

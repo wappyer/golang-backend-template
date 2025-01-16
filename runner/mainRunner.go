@@ -58,7 +58,7 @@ func (r *MainRunner) WebServer() {
 	engine.Use(gin.RecoveryWithWriter(&middleware.GinPanicWriter{}))
 
 	// 请求信息打印
-	//engine.Use(middleware.Logger(r.Conf.Server))
+	engine.Use(middleware.Logger(r.Conf.Server))
 
 	router.Router(engine)
 	addr := fmt.Sprintf(":%s", r.Conf.Server.Port)

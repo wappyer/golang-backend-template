@@ -41,7 +41,7 @@ func (r *DocsRunner) WebServer() {
 	r.Server = &http.Server{}
 	if !config.EnvIsPro() {
 		docsGinEngine := gin.New()
-		docsGinEngine.GET("/doc/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+		docsGinEngine.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		addr := fmt.Sprintf(":%s", r.Conf.Port)
 		r.Server = &http.Server{
 			Addr:           addr,

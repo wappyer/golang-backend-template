@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"time"
 )
 
 type RunnersFactory struct {
@@ -38,8 +39,8 @@ func (r *RunnersFactory) Run() {
 
 func (r *RunnersFactory) Shutdown() {
 	for _, runner := range r.Runners {
-		//ctx, cancelApi := context.WithTimeout(context.Background(), 10*time.Second)
-		//defer cancelApi()
-		runner.Shutdown(context.Background())
+		ctx, cancelApi := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancelApi()
+		runner.Shutdown(ctx)
 	}
 }
