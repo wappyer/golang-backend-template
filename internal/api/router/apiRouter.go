@@ -6,14 +6,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ExampleRouter(engine *gin.Engine) {
-	apiRouter := engine.Group("/example")
+func ApiRouter(engine *gin.Engine) {
+	apiRouter := engine.Group("/api")
 	// 统一开启token验证 `登录校验`
 	apiRouter.Use(mw.Auth())
 
 	// 用户相关
-	exampleCtrl := controller.NewExampleController()
+	adminCtrl := controller.NewAdminController()
 	{
-		apiRouter.POST("/admin/login", mw.MustUser, exampleCtrl.Example) // 管理员登录
+		apiRouter.POST("/admin/login", mw.MustUser, adminCtrl.Login) // 管理员登录
 	}
 }

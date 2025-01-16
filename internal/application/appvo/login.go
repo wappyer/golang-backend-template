@@ -1,10 +1,10 @@
 package appvo
 
-type ExampleReq struct {
+type LoginReq struct {
 	Phone    string `json:"phone"`
 	Password string `json:"password"`
 }
 
-type ExampleResp struct {
+type LoginResp struct {
 	Token string `json:"token"`
 }

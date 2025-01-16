@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-// 生成curl文件
+// 生成DDD文件
 func Test_gen_curl(t *testing.T) {
 	modelName := "event_queue"
 	modelDesc := "事件任务队列"

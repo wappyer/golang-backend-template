@@ -5,5 +5,5 @@ import (
 )
 
 func Router(engine *gin.Engine) {
-	ExampleRouter(engine)
+	ApiRouter(engine)
 }

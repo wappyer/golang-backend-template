@@ -1,11 +1,11 @@
 package apivo
 
-// ExampleLoginReq 后台管理员登录
-type ExampleLoginReq struct {
+// AdminLoginReq 后台管理员登录
+type AdminLoginReq struct {
 	Phone    string `json:"phone" validate:"required|isMobile"` // 手机号
 	Password string `json:"password" validate:"required"`       // 密码
 }
 
-type ExampleLoginResp struct {
+type AdminLoginResp struct {
 	Token string `json:"token"`
 }

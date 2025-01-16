@@ -33,6 +33,7 @@ func Initialize(cfg config.DB) error {
 
 	repoDBFactory.Repos = []IRepo{
 		NewLogRepository(),
+		NewAdminRepository(),
 	}
 
 	ctx := WithValueAppDB(context.Background(), repoDBFactory.DBFactory.GetDB())
