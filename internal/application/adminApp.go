@@ -18,8 +18,9 @@ func NewAdminApplication() *AdminApplication {
 }
 
 func (a *AdminApplication) Admin(ctx context.Context, param appvo.LoginReq) (appvo.LoginResp, errno.Errno) {
-	token, eno := a.AdminService.Admin(ctx, param.Phone, param.Password)
+	token, adminEntity, eno := a.AdminService.Admin(ctx, param.Phone, param.Password)
 	return appvo.LoginResp{
 		Token: token,
+		Admin: adminEntity,
 	}, eno
 }

@@ -43,7 +43,7 @@ func (a *AdminRepository) MustGet(ctx context.Context, m *model.Admin) errno.Err
 		return errno.NewErrno(errno.CodeDatabase)
 	}
 	if !has {
-		return errno.NewErrno(errno.CodeDataSelect)
+		return errno.NewErrno(errno.CodeLoginNameOrPassword)
 	}
 	return errno.Errno{}
 }

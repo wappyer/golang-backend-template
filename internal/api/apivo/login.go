@@ -7,5 +7,6 @@ type AdminLoginReq struct {
 }
 
 type AdminLoginResp struct {
-	Token string `json:"token"`
+	Token string    `json:"token"`
+	Admin AdminInfo `json:"admin"`
 }

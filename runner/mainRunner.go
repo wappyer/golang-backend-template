@@ -10,6 +10,7 @@ import (
 	"gitee.com/wappyer/golang-backend-template/internal/api/router"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/jwt"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/logger"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/validate"
 	"github.com/gin-gonic/gin"
@@ -39,6 +40,8 @@ func (r *MainRunner) Initialize() error {
 	validate.Initialize()
 	// 注册错误码
 	errno.Initialize()
+	// 初始化jwt
+	jwt.Initialize(r.Conf.Jwt.SigningKey, r.Conf.Jwt.Issuer, r.Conf.Jwt.ExpiresSecond)
 	return nil
 }
 
@@ -50,16 +53,13 @@ func (r *MainRunner) Run() {
 
 func (r *MainRunner) WebServer() {
 	engine := gin.New()
-
 	// 开启跨域
 	engine.Use(middleware.Cors())
-
 	// 自定义GinPanicWriter
 	engine.Use(gin.RecoveryWithWriter(&middleware.GinPanicWriter{}))
-
 	// 请求信息打印
 	engine.Use(middleware.Logger(r.Conf.Server))
-
+	// 注册路由
 	router.Router(engine)
 	addr := fmt.Sprintf(":%s", r.Conf.Server.Port)
 	r.Server = &http.Server{

@@ -96,7 +96,9 @@ type Sms struct {
 }
 
 type Jwt struct {
-	SigningKey string `mapstructure:"signingKey"`
+	SigningKey    string `mapstructure:"signingKey"`
+	Issuer        string `mapstructure:"issuer"`
+	ExpiresSecond int64  `mapstructure:"expiresSecond"`
 }
 
 type MQ struct {

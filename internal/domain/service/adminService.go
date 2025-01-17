@@ -2,9 +2,13 @@ package service
 
 import (
 	"context"
+	"crypto/md5"
+	"fmt"
+	"gitee.com/wappyer/golang-backend-template/internal/domain/entity"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/model"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/jwt"
 )
 
 type AdminService struct {
@@ -17,17 +21,22 @@ func NewAdminService() *AdminService {
 	}
 }
 
-func (s *AdminService) Admin(ctx context.Context, phone, password string) (string, errno.Errno) {
-	admin := &model.Admin{Phone: phone}
+func (s *AdminService) Admin(ctx context.Context, phone, password string) (string, entity.Admin, errno.Errno) {
+	pwdMd5 := fmt.Sprintf("%x", md5.Sum([]byte(password)))
+	admin := &model.Admin{Phone: phone, Password: pwdMd5}
+	adminEntity := entity.Admin{Admin: admin}
 
 	// 验证帐号密码
-	eno := s.AdminRepo.MustGet(ctx, admin)
+	eno := s.AdminRepo.MustGet(ctx, adminEntity.Admin)
 	if eno.NotNil() {
-		return "", eno
-	}
-	if admin.Password != password {
-		return "", errno.NewErrno(errno.CodeAdminLoginPassword)
+		return "", adminEntity, eno
 	}
 
-	return admin.Phone, errno.Errno{}
+	// 生成token
+	token, err := jwt.GetClientIns().GenerateToken(admin.Id)
+	if err != nil {
+		return "", adminEntity, errno.NewErrno(errno.CodeCreateToken)
+	}
+
+	return token, adminEntity, errno.Errno{}
 }

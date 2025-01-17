@@ -6,14 +6,18 @@ import (
 )
 
 type Client struct {
-	SigningKey []byte
+	SigningKey    []byte
+	Issuer        string
+	ExpiresSecond int64
 }
 
 var client *Client
 
-func Initialize(signingKey []byte) {
+func Initialize(signingKey, issuer string, expiresSecond int64) {
 	client = &Client{
-		SigningKey: signingKey,
+		SigningKey:    []byte(signingKey),
+		Issuer:        issuer,
+		ExpiresSecond: expiresSecond,
 	}
 }
 
@@ -27,12 +31,12 @@ type Claims struct {
 }
 
 // GenerateToken 生成Token
-func (c *Client) GenerateToken(userId string) (string, error) {
+func (c *Client) GenerateToken(loginId string) (string, error) {
 	claims := Claims{
-		userId,
+		loginId,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Unix() + 60*60*24*7, //7天的token
-			Issuer:    "wappyer",
+			ExpiresAt: time.Now().Unix() + c.ExpiresSecond, //7天的token
+			Issuer:    c.Issuer,
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

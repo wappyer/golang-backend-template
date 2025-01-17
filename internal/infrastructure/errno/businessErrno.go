@@ -8,7 +8,7 @@ const (
 	CodeIllegalToken                             // token异常，身份认证失败
 	CodeLoginTimeout                             // 登录超时
 	CodeUserInfo                                 // 用户信息异常
-	CodeAdminLoginPassword                       // 登录密码错误
+	CodeLoginNameOrPassword                      // 登录用户或密码错误
 	CodeWechatCode                               // 微信身份验证异常
 	CodeMember                                   // 无效成员信息
 	CodeAddress                                  // 无效地址信息
@@ -37,7 +37,7 @@ func InitBusinessErrno() {
 		{HttpStatus: 401, Code: CodeIllegalToken, Msg: "token异常，身份认证失败"},
 		{HttpStatus: 401, Code: CodeLoginTimeout, Msg: "登录超时"},
 		{HttpStatus: 401, Code: CodeUserInfo, Msg: "用户信息异常"},
-		{HttpStatus: 401, Code: CodeAdminLoginPassword, Msg: "登录密码错误"},
+		{HttpStatus: 401, Code: CodeLoginNameOrPassword, Msg: "登录用户或密码错误"},
 		{HttpStatus: 401, Code: CodeWechatCode, Msg: "微信身份验证异常"},
 		{HttpStatus: 404, Code: CodeMember, Msg: "无效成员信息"},
 		{HttpStatus: 404, Code: CodeAddress, Msg: "无效地址信息"},
