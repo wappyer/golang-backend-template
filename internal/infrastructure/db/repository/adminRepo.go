@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"gitee.com/wappyer/golang-backend-template/internal/domain/model"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/db/model"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
 )
 
@@ -17,6 +17,10 @@ type IAdminRepository interface {
 	List(ctx context.Context, req AdminListReq) (int64, []*model.Admin, error)
 }
 
+func init() {
+	repoFactory.Repos = append(repoFactory.Repos, NewAdminRepository())
+}
+
 type AdminRepository struct {
 }
 
@@ -25,7 +29,7 @@ func NewAdminRepository() *AdminRepository {
 }
 
 func (a *AdminRepository) AutoMigrate(ctx context.Context) error {
-	return GetAppDBWithCtx(ctx).AutoMigrate(&model.Admin{})
+	return DB.GetAppDBWithCtx(ctx).AutoMigrate(&model.Admin{})
 }
 
 func (a *AdminRepository) Get(ctx context.Context, m *model.Admin) (bool, error) {
@@ -33,7 +37,7 @@ func (a *AdminRepository) Get(ctx context.Context, m *model.Admin) (bool, error)
 	if *m == tmp { // 空结构体也能查出记录，过滤一下
 		return false, nil
 	}
-	tx := GetAppDBWithCtx(ctx).Where(m).Limit(1).Find(m)
+	tx := DB.GetAppDBWithCtx(ctx).Where(m).Limit(1).Find(m)
 	return tx.RowsAffected > 0, tx.Error
 }
 
@@ -49,19 +53,19 @@ func (a *AdminRepository) MustGet(ctx context.Context, m *model.Admin) errno.Err
 }
 
 func (a *AdminRepository) Add(ctx context.Context, m *model.Admin) error {
-	return GetAppDBWithCtx(ctx).Create(m).Error
+	return DB.GetAppDBWithCtx(ctx).Create(m).Error
 }
 
 func (a *AdminRepository) AddBatch(ctx context.Context, m []*model.Admin) error {
-	return GetAppDBWithCtx(ctx).Create(m).Error
+	return DB.GetAppDBWithCtx(ctx).Create(m).Error
 }
 
 func (a *AdminRepository) Update(ctx context.Context, m *model.Admin) error {
-	return GetAppDBWithCtx(ctx).Model(m).Updates(m).Error
+	return DB.GetAppDBWithCtx(ctx).Model(m).Updates(m).Error
 }
 
 func (a *AdminRepository) Delete(ctx context.Context, id int) error {
-	return GetAppDBWithCtx(ctx).Delete(&model.Admin{}, id).Error
+	return DB.GetAppDBWithCtx(ctx).Delete(&model.Admin{}, id).Error
 }
 
 type AdminListReq struct {
@@ -71,6 +75,6 @@ type AdminListReq struct {
 func (a *AdminRepository) List(ctx context.Context, req AdminListReq) (int64, []*model.Admin, error) {
 	var list []*model.Admin
 	var count int64
-	err := GetAppDBWithCtx(ctx).Where("`name` like ?", "%"+req.Search+"%").Find(&list).Count(&count).Error
+	err := DB.GetAppDBWithCtx(ctx).Where("`name` like ?", "%"+req.Search+"%").Find(&list).Count(&count).Error
 	return count, list, err
 }

@@ -5,8 +5,8 @@ import (
 	"crypto/md5"
 	"fmt"
 	"gitee.com/wappyer/golang-backend-template/internal/domain/entity"
-	"gitee.com/wappyer/golang-backend-template/internal/domain/model"
-	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/db/model"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/db/repository"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/jwt"
 )

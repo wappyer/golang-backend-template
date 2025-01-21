@@ -8,7 +8,7 @@ import (
 	"gitee.com/wappyer/golang-backend-template/global"
 	"gitee.com/wappyer/golang-backend-template/internal/api/middleware"
 	"gitee.com/wappyer/golang-backend-template/internal/api/router"
-	"gitee.com/wappyer/golang-backend-template/internal/domain/repository"
+	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/db/repository"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/errno"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/jwt"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/logger"

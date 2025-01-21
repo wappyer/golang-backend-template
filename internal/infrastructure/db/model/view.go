@@ -1,5 +1,11 @@
-package view
+package model
 
+// SqlMap 视图名称与sql映射
+var SqlMap = map[string]string{
+	NameRequestLog: SqlRequestLog,
+}
+
+// NameRequestLog 请求记录日志视图
 const NameRequestLog = "request_log"
 const SqlRequestLog = `create or replace view request_log as
 select l.request_id,

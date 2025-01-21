@@ -1,6 +1,8 @@
 package entity
 
-import "gitee.com/wappyer/golang-backend-template/internal/domain/model"
+import (
+	model "gitee.com/wappyer/golang-backend-template/internal/infrastructure/db/model"
+)
 
 type Log struct {
 	*model.Log
