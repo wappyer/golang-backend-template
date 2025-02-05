@@ -1,7 +1,7 @@
 package model
 
-// SqlMap 视图名称与sql映射
-var SqlMap = map[string]string{
+// ViewSqlMap 视图名称与sql映射
+var ViewSqlMap = map[string]string{
 	NameRequestLog: SqlRequestLog,
 }
 

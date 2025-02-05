@@ -51,7 +51,7 @@ func (d *Client) updateDb(linkConf Config) error {
 }
 
 func (d *Client) CreateView() error {
-	for k, v := range model.SqlMap {
+	for k, v := range model.ViewSqlMap {
 		err := d.globalDB.Exec(v).Error
 		if err != nil {
 			return errors.New(fmt.Sprintf("视图创建%v失败：%v", k, err))
