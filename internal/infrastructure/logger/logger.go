@@ -5,6 +5,10 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	TplErrorDatabase = "数据服务错误 error: %s."
+)
+
 func withValue(ctx context.Context) *zap.SugaredLogger {
 	s := zap.S()
 	c := GetClientIns()
