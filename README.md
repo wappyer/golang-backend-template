@@ -36,6 +36,7 @@ $ ./cmd/run.sh
     - api `表现层（校验传参，定义返回）`
         - controller `控制器层（路由handle直接处理请求的方法）`
         - middleware `中间件`
+        - router `路由层（定义路由规则）`
     - application `应用层（调用领域对象完成任务，不包含具体业务领域的代码）`
     - domain `领域层（系统的核心，负责处理业务逻辑。定义领域模型，聚合根，领域服务等处理业务）`
         - aggregate `聚合根`
