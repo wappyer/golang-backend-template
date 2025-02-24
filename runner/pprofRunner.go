@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gitee.com/wappyer/golang-backend-template/config"
 	"gitee.com/wappyer/golang-backend-template/internal/infrastructure/logger"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -47,6 +48,7 @@ func (r *PprofRunner) WebServer() {
 			WriteTimeout:   40 * time.Second,
 			MaxHeaderBytes: 1 << 20,
 		}
+		pprof.Register(pprofGinEngine, "/debug/pprof")
 		logger.InfoF(context.Background(), "[init] 启动pprof服务 listening at %v", addr)
 		err := r.Server.ListenAndServe()
 		if err != nil {
